@@ -73,13 +73,9 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
-public class VideoGridFragment extends SherlockGridFragment implements ISortable {
+public class VideoGridFragment extends SherlockGridFragment implements ISortable, VideoBrowserInterface {
 
     public final static String TAG = "VLC/VideoListFragment";
-
-    protected static final String ACTION_SCAN_START = "org.videolan.vlc.gui.ScanStart";
-    protected static final String ACTION_SCAN_STOP = "org.videolan.vlc.gui.ScanStop";
-    protected static final int UPDATE_ITEM = 0;
 
     /* Constants used to switch from Grid to List and vice versa */
     //FIXME If you know a way to do this in pure XML please do it!

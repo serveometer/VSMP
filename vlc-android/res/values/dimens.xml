@@ -3,4 +3,6 @@
     <dimen name="widget_margin">10dp</dimen>
     <dimen name="audio_browser_item_size">50dp</dimen>
     <dimen name="listview_bottom_padding">50dp</dimen>
+    <dimen name="tv_card_width">192dp</dimen>
+    <dimen name="tv_card_height">108dp</dimen>
 </resources>
