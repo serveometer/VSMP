@@ -1,5 +1,7 @@
 package org.videolan.vlc.gui.tv;
 
+import org.videolan.vlc.R;
+
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v17.leanback.app.DetailsFragment;
@@ -43,7 +45,7 @@ public class MediaItemDetailsFragment extends DetailsFragment {
 		DetailsOverviewRow detailsOverview = new DetailsOverviewRow(new MediaItemDetails(media.getTitle(), media.getDescription(), "Big body"));
 
 		// Add images and action buttons to the details view
-		detailsOverview.setImageDrawable(res.getDrawable(media.getCardImageId()));
+		detailsOverview.setImageDrawable(res.getDrawable(R.drawable.cone));
 		detailsOverview.addAction(new Action(1, "Play"));
 		detailsOverview.addAction(new Action(2, "Delete"));
 		mRowsAdapter.add(detailsOverview);
