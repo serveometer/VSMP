@@ -18,6 +18,7 @@ import org.videolan.vlc.gui.audio.MediaComparators;
 import org.videolan.vlc.gui.tv.audioplayer.AudioPlayerActivity;
 import org.videolan.vlc.gui.video.VideoBrowserInterface;
 import org.videolan.vlc.gui.video.VideoListHandler;
+import org.videolan.vlc.gui.video.VideoPlayerActivity;
 import org.videolan.vlc.util.Util;
 
 import android.content.Context;
@@ -64,6 +65,7 @@ public class GridFragment extends VerticalGridFragment implements VideoBrowserIn
 
 
 		mMediaLibrary = MediaLibrary.getInstance();
+
 		if (mType == HEADER_VIDEO) {
 			mThumbnailer = new Thumbnailer(mContext, getActivity().getWindowManager().getDefaultDisplay());
 			setupFragment();
@@ -213,7 +215,7 @@ public class GridFragment extends VerticalGridFragment implements VideoBrowserIn
 		ArrayList<Media> mediaList = null;
 		if (mType == HEADER_VIDEO)
 			mediaList = mMediaLibrary.getVideoItems();
-		else
+		else if (mType == HEADER_MUSIC)
 			mediaList = mMediaLibrary.getAudioItems();
 		size = mediaList == null ? 0 : mediaList.size();
 		mMediaIndex = new HashMap<String, Integer>(size);
