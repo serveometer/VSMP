@@ -411,6 +411,9 @@ public class VideoGridFragment extends SherlockGridFragment implements ISortable
                 }
             }
             mVideoAdapter.sort();
+            mGVFirstVisiblePos = mGridView.getFirstVisiblePosition();
+            mGridView.setSelection(mGVFirstVisiblePos);
+            mGridView.requestFocus();
         }
     }
 
