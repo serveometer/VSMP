@@ -180,6 +180,7 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
     private boolean mEnableBrightnessGesture;
     private boolean mEnableCloneMode;
     private boolean mDisplayRemainingTime = false;
+    private boolean mTvDevice = false;
     private int mScreenOrientation;
     private ImageButton mAudioTrack;
     private ImageButton mSubtitle;
@@ -447,7 +448,7 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
                     : getScreenOrientation());
             // Tips
             mOverlayTips = findViewById(R.id.player_overlay_tips);
-            if(mSettings.getBoolean(PREF_TIPS_SHOWN, false))
+            if(mSettings.getBoolean(PREF_TIPS_SHOWN, false) || getIntent().getBooleanExtra("tvDevice", false))
                 mOverlayTips.setVisibility(View.GONE);
             else {
                 mOverlayTips.bringToFront();
@@ -639,22 +640,26 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
     }
 
     public static void start(Context context, String location) {
-        start(context, location, null, -1, false, false);
+        start(context, location, null, -1, false, false, false);
+    }
+
+    public static void start(Context context, String location, Boolean fromStart, boolean tvDevice) {
+        start(context, location, null, -1, false, fromStart, tvDevice);
     }
 
     public static void start(Context context, String location, Boolean fromStart) {
-        start(context, location, null, -1, false, fromStart);
+        start(context, location, null, -1, false, fromStart, false);
     }
 
     public static void start(Context context, String location, String title, Boolean dontParse) {
-        start(context, location, title, -1, dontParse, false);
+        start(context, location, title, -1, dontParse, false, false);
     }
 
     public static void start(Context context, String location, String title, int position, Boolean dontParse) {
-        start(context, location, title, position, dontParse, false);
+        start(context, location, title, position, dontParse, false, false);
     }
 
-    public static void start(Context context, String location, String title, int position, Boolean dontParse, Boolean fromStart) {
+    public static void start(Context context, String location, String title, int position, Boolean dontParse, Boolean fromStart, boolean tvDevice) {
         Intent intent = new Intent(context, VideoPlayerActivity.class);
         intent.setAction(VideoPlayerActivity.PLAY_FROM_VIDEOGRID);
         intent.putExtra("itemLocation", location);
@@ -662,6 +667,7 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
         intent.putExtra("dontParse", dontParse);
         intent.putExtra("fromStart", fromStart);
         intent.putExtra("itemPosition", position);
+        intent.putExtra("tvDevice", tvDevice);
 
         if (dontParse)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);

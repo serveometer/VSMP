@@ -13,7 +13,7 @@ public class TvUtil {
 
 	public static void openMedia(Activity activity, Media media, Row row){
 		if (media.getType() == Media.TYPE_VIDEO){
-			VideoPlayerActivity.start(activity, media.getLocation(), false);
+			VideoPlayerActivity.start(activity, media.getLocation(), false, true);
 		} else if (media.getType() == Media.TYPE_AUDIO){
 			Intent intent = new Intent(activity,
 					DetailsActivity.class);
