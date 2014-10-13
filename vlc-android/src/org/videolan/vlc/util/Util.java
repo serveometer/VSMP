@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 public class Util {
     public static final String ACTION_SCAN_START = "org.videolan.vlc.gui.ScanStart";
     public static final String ACTION_SCAN_STOP = "org.videolan.vlc.gui.ScanStop";
+    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     /** Print an on-screen message to alert the user */
     public static void toaster(Context context, int stringId) {
@@ -143,5 +145,22 @@ public class Util {
         Intent intent = new Intent();
         intent.setAction(ACTION_SCAN_STOP);
         VLCApplication.getAppContext().sendBroadcast(intent);
+    }
+    /**
+     * Generate a value suitable for use in {@link #setId(int)}.
+     * This value will not collide with ID values generated at build time by aapt for R.id.
+     *
+     * @return a generated ID value
+     */
+    public static int generateViewId() {
+        for (;;) {
+            final int result = sNextGeneratedId.get();
+            // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+            int newValue = result + 1;
+            if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
+            if (sNextGeneratedId.compareAndSet(result, newValue)) {
+                return result;
+            }
+        }
     }
 }
