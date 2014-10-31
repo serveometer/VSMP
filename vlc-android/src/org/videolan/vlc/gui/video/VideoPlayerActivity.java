@@ -721,26 +721,31 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
 
 		if (System.currentTimeMillis() - mLastMove > JOYSTICK_INPUT_DELAY){
 			if (Math.abs(x) > 0.3){
-				seek(x > 0.0f ? 10000 : -10000);
-				mLastMove = System.currentTimeMillis();
+				if (AndroidDevices.hasTsp()) {
+                    seek(x > 0.0f ? 10000 : -10000);
+                } else
+                    navigateDvdMenu(x > 0.0f ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT);
 			} else if (Math.abs(y) > 0.3){
-				if (mIsFirstBrightnessGesture)
-					initBrightnessTouch();
-				changeBrightness(-y/10f);
-				mLastMove = System.currentTimeMillis();
+				if (AndroidDevices.hasTsp()) {
+                    if (mIsFirstBrightnessGesture)
+                        initBrightnessTouch();
+                    changeBrightness(-y / 10f);
+                } else
+                    navigateDvdMenu(x > 0.0f ? KeyEvent.KEYCODE_DPAD_UP : KeyEvent.KEYCODE_DPAD_DOWN);
 			} else if (Math.abs(rz) > 0.3){
 				mVol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 				int delta = -(int) ((rz / 7) * mAudioMax);
 				int vol = (int) Math.min(Math.max(mVol + delta, 0), mAudioMax);
 				setAudioVolume(vol);
-				mLastMove = System.currentTimeMillis();
 			}
+            mLastMove = System.currentTimeMillis();
 		}
 		return true;
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d(TAG, "onKeyDown "+KeyEvent.keyCodeToString(keyCode));
         showOverlay(OVERLAY_TIMEOUT);
         switch (keyCode) {
         case KeyEvent.KEYCODE_F:
@@ -758,7 +763,10 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
         case KeyEvent.KEYCODE_MEDIA_PAUSE:
         case KeyEvent.KEYCODE_SPACE:
         case KeyEvent.KEYCODE_BUTTON_A:
-            doPlayPause();
+            if (mIsNavMenu)
+                return navigateDvdMenu(keyCode);
+            else
+                doPlayPause();
             return true;
         case KeyEvent.KEYCODE_V:
         case KeyEvent.KEYCODE_BUTTON_Y:
@@ -781,7 +789,10 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
             return true;
         case KeyEvent.KEYCODE_VOLUME_MUTE:
         case KeyEvent.KEYCODE_BUTTON_X:
-            updateMute();
+            if (mIsNavMenu)
+                return navigateDvdMenu(keyCode);
+            else
+                updateMute();
             return true;
         case KeyEvent.KEYCODE_S:
         case KeyEvent.KEYCODE_MEDIA_STOP:
@@ -818,6 +829,8 @@ public class VideoPlayerActivity extends Activity implements IVideoPlayer {
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_BUTTON_X:
+            case KeyEvent.KEYCODE_BUTTON_A:
                 mLibVLC.playerNavigate(LibVLC.INPUT_NAV_ACTIVATE);
                 return true;
             default:
